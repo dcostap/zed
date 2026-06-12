@@ -15,3 +15,11 @@ Keep `assets/settings/initial_user_settings.json` empty aside from the minimal v
 # Fork Keymaps
 
 Customize the user's default keybindings in `assets/keymaps/dario.json`. Do not edit `assets/keymaps/default-linux.json`, `assets/keymaps/default-macos.json`, or `assets/keymaps/default-windows.json` for personal workflow changes.
+
+# Hiding vs Removing Commands
+
+When a command should disappear from the user-facing command palette but remain available for compatibility or internal dispatch, hide it with `CommandPaletteFilter` instead of removing the action. If the user says to "nuke" commands, clarify whether they truly mean deleting the action or just hiding it; most existing actions should be hidden rather than removed.
+
+# Build Workflow
+
+Rust builds in this repository are expensive, especially after touching high-fanout crates like `zed_actions`, `workspace`, `ui`, `settings`, `editor`, or `gpui`. Batch related implementation changes before validating. Prefer one `cargo build -p zed` after a batch, because it both validates and produces the runnable `target/debug/zed.exe`. Use `cargo check` only for targeted intermediate feedback when a risky Rust change needs faster validation before continuing.
