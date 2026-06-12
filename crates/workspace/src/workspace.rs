@@ -327,14 +327,8 @@ actions!(
         ToggleLeftDock,
         /// Toggles the right dock.
         ToggleRightDock,
-        /// Toggles zoom on the active pane.
-        ToggleZoom,
         /// Toggles read-only mode for the active item (if supported by that item).
         ToggleReadOnlyFile,
-        /// Zooms in on the active pane.
-        ZoomIn,
-        /// Zooms out of the active pane.
-        ZoomOut,
         /// If any worktrees are in restricted mode, shows a modal with possible actions.
         /// If the modal is shown already, closes it without trusting any worktree.
         ToggleWorktreeSecurity,
@@ -13142,7 +13136,7 @@ mod tests {
 
         // Zoom In
         pane.update_in(cx, |pane, window, cx| {
-            pane.zoom_in(&crate::ZoomIn, window, cx);
+            pane.zoom_in(window, cx);
         });
 
         workspace.update_in(cx, |workspace, window, cx| {
@@ -13162,7 +13156,7 @@ mod tests {
 
         // Zoom In again is a no-op
         pane.update_in(cx, |pane, window, cx| {
-            pane.zoom_in(&crate::ZoomIn, window, cx);
+            pane.zoom_in(window, cx);
         });
 
         workspace.update_in(cx, |workspace, window, cx| {
@@ -13179,7 +13173,7 @@ mod tests {
 
         // Zoom Out
         pane.update_in(cx, |pane, window, cx| {
-            pane.zoom_out(&crate::ZoomOut, window, cx);
+            pane.zoom_out(cx);
         });
 
         workspace.update_in(cx, |workspace, _window, cx| {
@@ -13195,7 +13189,7 @@ mod tests {
 
         // Zoom Out again is a no-op
         pane.update_in(cx, |pane, window, cx| {
-            pane.zoom_out(&crate::ZoomOut, window, cx);
+            pane.zoom_out(cx);
         });
 
         workspace.update_in(cx, |workspace, _window, cx| {

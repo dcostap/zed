@@ -1302,22 +1302,6 @@ impl DebugPanel {
         self.session_picker_menu_handle.toggle(window, cx);
     }
 
-    fn toggle_zoom(
-        &mut self,
-        _: &workspace::ToggleZoom,
-        window: &mut Window,
-        cx: &mut Context<Self>,
-    ) {
-        if self.is_zoomed {
-            cx.emit(PanelEvent::ZoomOut);
-        } else {
-            if !self.focus_handle(cx).contains_focused(window, cx) {
-                cx.focus_self(window);
-            }
-            cx.emit(PanelEvent::ZoomIn);
-        }
-    }
-
     fn label_for_child_session(
         &self,
         parent_session: &Entity<Session>,
@@ -1759,7 +1743,6 @@ impl Render for DebugPanel {
                     .ok();
                 }
             })
-            .on_action(cx.listener(Self::toggle_zoom))
             .on_action(cx.listener(|panel, _: &ToggleExpandItem, _, cx| {
                 let Some(session) = panel.active_session() else {
                     return;

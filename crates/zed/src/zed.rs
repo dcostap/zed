@@ -1009,6 +1009,15 @@ fn register_actions(
             })
             .detach()
         })
+        .register_action(|_, _: &zed_actions::editor::ZoomIn, _window, cx| {
+            theme_settings::increase_buffer_font_size(cx);
+        })
+        .register_action(|_, _: &zed_actions::editor::ZoomOut, _window, cx| {
+            theme_settings::decrease_buffer_font_size(cx);
+        })
+        .register_action(|_, _: &zed_actions::editor::ResetZoom, _window, cx| {
+            theme_settings::reset_buffer_font_size(cx);
+        })
         .register_action({
             let fs = app_state.fs.clone();
             move |_, action: &zed_actions::IncreaseUiFontSize, _window, cx| {

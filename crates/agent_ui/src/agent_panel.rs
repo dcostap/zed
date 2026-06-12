@@ -97,7 +97,7 @@ use ui::{
 use util::ResultExt as _;
 use workspace::{
     CollaboratorId, DraggedSelection, DraggedTab, MultiWorkspace, PathList, SerializedPathList,
-    ToggleWorkspaceSidebar, ToggleZoom, Workspace, WorkspaceId,
+    ToggleWorkspaceSidebar, Workspace, WorkspaceId,
     dock::{DockPosition, Panel, PanelEvent},
     item::ItemEvent,
 };
@@ -3557,7 +3557,7 @@ impl AgentPanel {
         theme_settings::reset_agent_buffer_font_size(cx);
     }
 
-    pub fn toggle_zoom(&mut self, _: &ToggleZoom, window: &mut Window, cx: &mut Context<Self>) {
+    pub fn toggle_zoom(&mut self, window: &mut Window, cx: &mut Context<Self>) {
         if self.zoomed {
             cx.emit(PanelEvent::ZoomOut);
         } else {
@@ -6078,9 +6078,9 @@ impl AgentPanel {
         };
         let full_screen_button = IconButton::new(icon_id, icon_name)
             .icon_size(IconSize::Small)
-            .tooltip(move |_, cx| Tooltip::for_action(tooltip_text, &ToggleZoom, cx))
+            .tooltip(move |window, cx| Tooltip::text(tooltip_text)(window, cx))
             .on_click(cx.listener(move |this, _, window, cx| {
-                this.toggle_zoom(&ToggleZoom, window, cx);
+                this.toggle_zoom(window, cx);
             }));
 
         let max_content_width = AgentSettings::get_global(cx).max_content_width;
@@ -6479,7 +6479,6 @@ impl Render for AgentPanel {
             .on_action(cx.listener(Self::increase_font_size))
             .on_action(cx.listener(Self::decrease_font_size))
             .on_action(cx.listener(Self::reset_font_size))
-            .on_action(cx.listener(Self::toggle_zoom))
             .on_action(cx.listener(|this, _: &ReauthenticateAgent, window, cx| {
                 if let Some(conversation_view) = this.active_conversation_view() {
                     conversation_view.update(cx, |conversation_view, cx| {

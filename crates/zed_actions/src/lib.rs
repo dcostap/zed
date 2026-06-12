@@ -213,6 +213,12 @@ pub mod editor {
             MoveUp,
             /// Moves cursor down.
             MoveDown,
+            /// Zooms in the editor text.
+            ZoomIn,
+            /// Zooms out the editor text.
+            ZoomOut,
+            /// Resets the editor text zoom.
+            ResetZoom,
             /// Reveals the current file in the system file manager.
             RevealInFileManager,
         ]

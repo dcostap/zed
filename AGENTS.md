@@ -11,3 +11,7 @@ When working in this fork, prefer bold, coherent product decisions over conserva
 To defaultize a user-facing setting in this fork, change the built-in default in `assets/settings/default.json`. Do not change Rust code for settings that already have entries there.
 
 Keep `assets/settings/initial_user_settings.json` empty aside from the minimal valid settings object. It is only the template used when creating a user settings file, and duplicating defaults there turns them into user-level overrides.
+
+# Fork Keymaps
+
+Customize the user's default keybindings in `assets/keymaps/dario.json`. Do not edit `assets/keymaps/default-linux.json`, `assets/keymaps/default-macos.json`, or `assets/keymaps/default-windows.json` for personal workflow changes.
