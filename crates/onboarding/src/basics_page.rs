@@ -337,7 +337,7 @@ fn render_base_keymap_section(tab_index: &mut isize, cx: &mut App) -> impl IntoE
         BaseKeymap::Atom => Some(3),
         BaseKeymap::Emacs => Some(4),
         BaseKeymap::Cursor => Some(5),
-        BaseKeymap::TextMate | BaseKeymap::None => None,
+        BaseKeymap::TextMate | BaseKeymap::Dario | BaseKeymap::None => None,
     };
 
     return v_flex().gap_2().child(Label::new("Base Keymap")).child(

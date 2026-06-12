@@ -7,7 +7,7 @@ use settings::{RegisterSetting, Settings};
 
 /// Base key bindings scheme. Base keymaps can be overridden with user keymaps.
 ///
-/// Default: VSCode
+/// Default: Dario
 #[derive(
     Copy, Clone, Debug, Serialize, Deserialize, JsonSchema, PartialEq, Eq, Default, RegisterSetting,
 )]
@@ -20,6 +20,7 @@ pub enum BaseKeymap {
     TextMate,
     Emacs,
     Cursor,
+    Dario,
     None,
 }
 
@@ -33,6 +34,7 @@ impl From<BaseKeymapContent> for BaseKeymap {
             BaseKeymapContent::TextMate => Self::TextMate,
             BaseKeymapContent::Emacs => Self::Emacs,
             BaseKeymapContent::Cursor => Self::Cursor,
+            BaseKeymapContent::Dario => Self::Dario,
             BaseKeymapContent::None => Self::None,
         }
     }
@@ -47,6 +49,7 @@ impl Into<BaseKeymapContent> for BaseKeymap {
             BaseKeymap::TextMate => BaseKeymapContent::TextMate,
             BaseKeymap::Emacs => BaseKeymapContent::Emacs,
             BaseKeymap::Cursor => BaseKeymapContent::Cursor,
+            BaseKeymap::Dario => BaseKeymapContent::Dario,
             BaseKeymap::None => BaseKeymapContent::None,
         }
     }
@@ -62,6 +65,7 @@ impl Display for BaseKeymap {
             BaseKeymap::TextMate => write!(f, "TextMate"),
             BaseKeymap::Emacs => write!(f, "Emacs (beta)"),
             BaseKeymap::Cursor => write!(f, "Cursor (beta)"),
+            BaseKeymap::Dario => write!(f, "Dario"),
             BaseKeymap::None => write!(f, "None"),
         }
     }
@@ -69,8 +73,9 @@ impl Display for BaseKeymap {
 
 impl BaseKeymap {
     #[cfg(target_os = "macos")]
-    pub const OPTIONS: [(&'static str, Self); 7] = [
-        ("VS Code (Default)", Self::VSCode),
+    pub const OPTIONS: [(&'static str, Self); 8] = [
+        ("Dario (Default)", Self::Dario),
+        ("VS Code", Self::VSCode),
         ("Atom", Self::Atom),
         ("JetBrains", Self::JetBrains),
         ("Sublime Text", Self::SublimeText),
@@ -80,8 +85,9 @@ impl BaseKeymap {
     ];
 
     #[cfg(not(target_os = "macos"))]
-    pub const OPTIONS: [(&'static str, Self); 6] = [
-        ("VS Code (Default)", Self::VSCode),
+    pub const OPTIONS: [(&'static str, Self); 7] = [
+        ("Dario (Default)", Self::Dario),
+        ("VS Code", Self::VSCode),
         ("Atom", Self::Atom),
         ("JetBrains", Self::JetBrains),
         ("Sublime Text", Self::SublimeText),
@@ -98,6 +104,7 @@ impl BaseKeymap {
             BaseKeymap::TextMate => Some("keymaps/macos/textmate.json"),
             BaseKeymap::Emacs => Some("keymaps/macos/emacs.json"),
             BaseKeymap::Cursor => Some("keymaps/macos/cursor.json"),
+            BaseKeymap::Dario => Some("keymaps/dario.json"),
             BaseKeymap::VSCode => None,
             BaseKeymap::None => None,
         }
@@ -109,6 +116,7 @@ impl BaseKeymap {
             BaseKeymap::Atom => Some("keymaps/linux/atom.json"),
             BaseKeymap::Emacs => Some("keymaps/linux/emacs.json"),
             BaseKeymap::Cursor => Some("keymaps/linux/cursor.json"),
+            BaseKeymap::Dario => Some("keymaps/dario.json"),
             BaseKeymap::TextMate => None,
             BaseKeymap::VSCode => None,
             BaseKeymap::None => None,
