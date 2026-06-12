@@ -515,8 +515,10 @@ impl EditorElement {
                         };
 
                         if delta_y > 0.0 {
+                            theme_settings::adjust_ui_font_size(cx, |size| size + px(1.0));
                             theme_settings::increase_buffer_font_size(cx);
                         } else if delta_y < 0.0 {
+                            theme_settings::adjust_ui_font_size(cx, |size| size - px(1.0));
                             theme_settings::decrease_buffer_font_size(cx);
                         }
 

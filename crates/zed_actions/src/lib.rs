@@ -195,6 +195,24 @@ pub struct ResetUiFontSize {
     pub persist: bool,
 }
 
+/// Makes the app larger by increasing both UI and editor text sizes.
+#[derive(PartialEq, Clone, Default, Debug, Deserialize, JsonSchema, Action)]
+#[action(namespace = zed)]
+#[serde(deny_unknown_fields)]
+pub struct ZoomIn;
+
+/// Makes the app smaller by decreasing both UI and editor text sizes.
+#[derive(PartialEq, Clone, Default, Debug, Deserialize, JsonSchema, Action)]
+#[action(namespace = zed)]
+#[serde(deny_unknown_fields)]
+pub struct ZoomOut;
+
+/// Resets app zoom by resetting both UI and editor text sizes.
+#[derive(PartialEq, Clone, Default, Debug, Deserialize, JsonSchema, Action)]
+#[action(namespace = zed)]
+#[serde(deny_unknown_fields)]
+pub struct ResetZoom;
+
 /// Resets all zoom levels (UI and buffer font sizes, including in the agent panel) to their default values.
 #[derive(PartialEq, Clone, Default, Debug, Deserialize, JsonSchema, Action)]
 #[action(namespace = zed)]
@@ -213,12 +231,6 @@ pub mod editor {
             MoveUp,
             /// Moves cursor down.
             MoveDown,
-            /// Zooms in the editor text.
-            ZoomIn,
-            /// Zooms out the editor text.
-            ZoomOut,
-            /// Resets the editor text zoom.
-            ResetZoom,
             /// Reveals the current file in the system file manager.
             RevealInFileManager,
         ]

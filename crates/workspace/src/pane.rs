@@ -1,7 +1,7 @@
 use crate::{
     CloseWindow, NewCenterTerminal, NewFile, NewTerminal, OpenInTerminal, OpenOptions,
-    OpenTerminal, OpenVisible, SplitDirection, ToggleFileFinder, ToggleProjectSymbols, Workspace,
-    WorkspaceItemBuilder,
+    OpenTerminal, OpenVisible, SplitDirection, ToggleFileFinder, ToggleProjectSymbols, ToggleZoom,
+    Workspace, WorkspaceItemBuilder, ZoomIn, ZoomOut,
     focus_follows_mouse::FocusFollowsMouse as _,
     invalid_item_view::InvalidItemView,
     item::{
@@ -4340,6 +4340,15 @@ impl Render for Pane {
             }))
             .on_action(cx.listener(|_, _: &JoinAll, _, cx| {
                 cx.emit(Event::JoinAll);
+            }))
+            .on_action(cx.listener(|pane, _: &ToggleZoom, window, cx| {
+                pane.toggle_zoom(window, cx);
+            }))
+            .on_action(cx.listener(|pane, _: &ZoomIn, window, cx| {
+                pane.zoom_in(window, cx);
+            }))
+            .on_action(cx.listener(|pane, _: &ZoomOut, _, cx| {
+                pane.zoom_out(cx);
             }))
             .on_action(cx.listener(Self::navigate_backward))
             .on_action(cx.listener(Self::navigate_forward))

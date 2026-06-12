@@ -1,6 +1,7 @@
 mod persistence;
 
 use std::{
+    any::TypeId,
     cmp::{self, Reverse},
     collections::{HashMap, VecDeque},
     sync::Arc,
@@ -30,6 +31,20 @@ use zed_actions::{OpenZedUrl, command_palette::Toggle};
 
 pub fn init(cx: &mut App) {
     command_palette_hooks::init(cx);
+    CommandPaletteFilter::update_global(cx, |filter, _| {
+        filter.hide_action_types(&[
+            TypeId::of::<zed_actions::IncreaseBufferFontSize>(),
+            TypeId::of::<zed_actions::DecreaseBufferFontSize>(),
+            TypeId::of::<zed_actions::ResetBufferFontSize>(),
+            TypeId::of::<zed_actions::IncreaseUiFontSize>(),
+            TypeId::of::<zed_actions::DecreaseUiFontSize>(),
+            TypeId::of::<zed_actions::ResetUiFontSize>(),
+            TypeId::of::<zed_actions::ResetAllZoom>(),
+            TypeId::of::<workspace::ToggleZoom>(),
+            TypeId::of::<workspace::ZoomIn>(),
+            TypeId::of::<workspace::ZoomOut>(),
+        ]);
+    });
     cx.observe_new(CommandPalette::register).detach();
 }
 

@@ -141,8 +141,6 @@ actions!(
         ShowAll,
         /// Toggles fullscreen mode.
         ToggleFullScreen,
-        /// Zooms the window.
-        Zoom,
         /// Triggers a test panic for debugging.
         TestPanic,
         /// Triggers a hard crash for debugging.
@@ -901,9 +899,6 @@ fn register_actions(
         .register_action(|_, _: &Minimize, window, _| {
             window.minimize_window();
         })
-        .register_action(|_, _: &Zoom, window, _| {
-            window.zoom_window();
-        })
         .register_action(|_, _: &ToggleFullScreen, window, _| {
             window.toggle_fullscreen();
         })
@@ -1009,13 +1004,16 @@ fn register_actions(
             })
             .detach()
         })
-        .register_action(|_, _: &zed_actions::editor::ZoomIn, _window, cx| {
+        .register_action(|_, _: &zed_actions::ZoomIn, _window, cx| {
+            theme_settings::adjust_ui_font_size(cx, |size| size + px(1.0));
             theme_settings::increase_buffer_font_size(cx);
         })
-        .register_action(|_, _: &zed_actions::editor::ZoomOut, _window, cx| {
+        .register_action(|_, _: &zed_actions::ZoomOut, _window, cx| {
+            theme_settings::adjust_ui_font_size(cx, |size| size - px(1.0));
             theme_settings::decrease_buffer_font_size(cx);
         })
-        .register_action(|_, _: &zed_actions::editor::ResetZoom, _window, cx| {
+        .register_action(|_, _: &zed_actions::ResetZoom, _window, cx| {
+            theme_settings::reset_ui_font_size(cx);
             theme_settings::reset_buffer_font_size(cx);
         })
         .register_action({

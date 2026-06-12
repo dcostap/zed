@@ -8,9 +8,9 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
     use zed_actions::Quit;
 
     let mut view_items = vec![
-        MenuItem::action("Zoom In Editor", zed_actions::editor::ZoomIn),
-        MenuItem::action("Zoom Out Editor", zed_actions::editor::ZoomOut),
-        MenuItem::action("Reset Editor Zoom", zed_actions::editor::ResetZoom),
+        MenuItem::action("Zoom In", zed_actions::ZoomIn),
+        MenuItem::action("Zoom Out", zed_actions::ZoomOut),
+        MenuItem::action("Reset Zoom", zed_actions::ResetZoom),
         MenuItem::action(
             "Reset All Zoom",
             zed_actions::ResetAllZoom { persist: false },
@@ -268,7 +268,6 @@ pub fn app_menus(cx: &mut App) -> Vec<Menu> {
             disabled: false,
             items: vec![
                 MenuItem::action("Minimize", super::Minimize),
-                MenuItem::action("Zoom", super::Zoom),
                 MenuItem::separator(),
             ],
         },
