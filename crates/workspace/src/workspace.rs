@@ -61,11 +61,12 @@ use futures::{
 };
 use gpui::{
     Action, AnyEntity, AnyView, AnyWeakView, App, AsyncApp, AsyncWindowContext, Axis, Bounds,
-    Context, CursorStyle, Decorations, DragMoveEvent, Entity, EntityId, EventEmitter, FocusHandle,
-    Focusable, Global, HitboxBehavior, Hsla, KeyContext, Keystroke, ManagedView, MouseButton,
-    PathPromptOptions, Point, PromptLevel, Render, ResizeEdge, Size, Stateful, Subscription,
-    SystemWindowTabController, Task, TaskExt, Tiling, WeakEntity, WindowBounds, WindowHandle,
-    WindowId, WindowOptions, actions, canvas, point, relative, size, transparent_black,
+    Context, CursorStyle, Decorations, DispatchPhase, DragMoveEvent, Entity, EntityId,
+    EventEmitter, FocusHandle, Focusable, Global, HitboxBehavior, Hsla, KeyContext, Keystroke,
+    ManagedView, MouseButton, PathPromptOptions, Point, PromptLevel, Render, ResizeEdge,
+    ScrollDelta, ScrollWheelEvent, Size, Stateful, Subscription, SystemWindowTabController, Task,
+    TaskExt, Tiling, WeakEntity, WindowBounds, WindowHandle, WindowId, WindowOptions, actions,
+    canvas, point, px, relative, size, transparent_black,
 };
 pub use history_manager::*;
 pub use item::{
@@ -8632,6 +8633,25 @@ impl Render for Workspace {
             (None, None)
         };
         let ui_font = theme_settings::setup_ui_font(window, cx);
+
+        window.on_mouse_event(|event: &ScrollWheelEvent, phase, _window, cx| {
+            if phase == DispatchPhase::Capture && event.modifiers.secondary() {
+                let delta_y = match event.delta {
+                    ScrollDelta::Pixels(pixels) => pixels.y.into(),
+                    ScrollDelta::Lines(lines) => lines.y,
+                };
+
+                if delta_y > 0.0 {
+                    theme_settings::adjust_ui_font_size(cx, |size| size + px(1.0));
+                    theme_settings::increase_buffer_font_size(cx);
+                    cx.stop_propagation();
+                } else if delta_y < 0.0 {
+                    theme_settings::adjust_ui_font_size(cx, |size| size - px(1.0));
+                    theme_settings::decrease_buffer_font_size(cx);
+                    cx.stop_propagation();
+                }
+            }
+        });
 
         let theme = cx.theme().clone();
         let colors = theme.colors();

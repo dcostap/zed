@@ -4385,36 +4385,12 @@ mod tests {
             window.draw(cx).clear();
         });
 
-        // mouse_wheel_zoom is disabled by default — zoom should not work.
-        let initial_font_size =
-            cx.update(|_, cx| ThemeSettings::get_global(cx).buffer_font_size(cx).as_f32());
-
-        cx.simulate_event(gpui::ScrollWheelEvent {
-            position: mouse_position,
-            delta: gpui::ScrollDelta::Pixels(point(px(0.), px(1.))),
-            modifiers: event_modifiers,
-            ..Default::default()
-        });
-
-        let font_size_after_disabled_zoom =
-            cx.update(|_, cx| ThemeSettings::get_global(cx).buffer_font_size(cx).as_f32());
-
-        assert_eq!(
-            initial_font_size, font_size_after_disabled_zoom,
-            "Editor buffer font-size should not change when mouse_wheel_zoom is disabled"
-        );
-
-        // Enable mouse_wheel_zoom and verify zoom works.
-        cx.update(|_, cx| {
-            SettingsStore::update_global(cx, |store, cx| {
-                store.update_user_settings(cx, |settings| {
-                    settings.editor.mouse_wheel_zoom = Some(true);
-                });
-            });
-        });
-
-        cx.update(|window, cx| {
-            window.draw(cx).clear();
+        let (initial_buffer_font_size, initial_ui_font_size) = cx.update(|_, cx| {
+            let theme_settings = ThemeSettings::get_global(cx);
+            (
+                theme_settings.buffer_font_size(cx).as_f32(),
+                theme_settings.ui_font_size(cx).as_f32(),
+            )
         });
 
         cx.simulate_event(gpui::ScrollWheelEvent {
@@ -4424,12 +4400,21 @@ mod tests {
             ..Default::default()
         });
 
-        let increased_font_size =
-            cx.update(|_, cx| ThemeSettings::get_global(cx).buffer_font_size(cx).as_f32());
+        let (increased_buffer_font_size, increased_ui_font_size) = cx.update(|_, cx| {
+            let theme_settings = ThemeSettings::get_global(cx);
+            (
+                theme_settings.buffer_font_size(cx).as_f32(),
+                theme_settings.ui_font_size(cx).as_f32(),
+            )
+        });
 
         assert!(
-            increased_font_size > initial_font_size,
-            "Editor buffer font-size should have increased from scroll-zoom"
+            increased_buffer_font_size > initial_buffer_font_size,
+            "Buffer font size should have increased from scroll-zoom"
+        );
+        assert!(
+            increased_ui_font_size > initial_ui_font_size,
+            "UI font size should have increased from scroll-zoom"
         );
 
         cx.update(|window, cx| {
@@ -4443,43 +4428,21 @@ mod tests {
             ..Default::default()
         });
 
-        let decreased_font_size =
-            cx.update(|_, cx| ThemeSettings::get_global(cx).buffer_font_size(cx).as_f32());
+        let (decreased_buffer_font_size, decreased_ui_font_size) = cx.update(|_, cx| {
+            let theme_settings = ThemeSettings::get_global(cx);
+            (
+                theme_settings.buffer_font_size(cx).as_f32(),
+                theme_settings.ui_font_size(cx).as_f32(),
+            )
+        });
 
         assert!(
-            decreased_font_size < increased_font_size,
-            "Editor buffer font-size should have decreased from scroll-zoom"
+            decreased_buffer_font_size < increased_buffer_font_size,
+            "Buffer font size should have decreased from scroll-zoom"
         );
-
-        // Disable mouse_wheel_zoom again and verify zoom stops working.
-        cx.update(|_, cx| {
-            SettingsStore::update_global(cx, |store, cx| {
-                store.update_user_settings(cx, |settings| {
-                    settings.editor.mouse_wheel_zoom = Some(false);
-                });
-            });
-        });
-
-        let font_size_before =
-            cx.update(|_, cx| ThemeSettings::get_global(cx).buffer_font_size(cx).as_f32());
-
-        cx.update(|window, cx| {
-            window.draw(cx).clear();
-        });
-
-        cx.simulate_event(gpui::ScrollWheelEvent {
-            position: mouse_position,
-            delta: gpui::ScrollDelta::Pixels(point(px(0.), px(1.))),
-            modifiers: event_modifiers,
-            ..Default::default()
-        });
-
-        let font_size_after =
-            cx.update(|_, cx| ThemeSettings::get_global(cx).buffer_font_size(cx).as_f32());
-
-        assert_eq!(
-            font_size_before, font_size_after,
-            "Editor buffer font-size should not change when mouse_wheel_zoom is re-disabled"
+        assert!(
+            decreased_ui_font_size < increased_ui_font_size,
+            "UI font size should have decreased from scroll-zoom"
         );
     }
 

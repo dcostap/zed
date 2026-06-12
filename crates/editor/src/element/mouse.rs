@@ -505,34 +505,15 @@ impl EditorElement {
                 if phase == DispatchPhase::Bubble && hitbox.should_handle_scroll(window) {
                     delta = delta.coalesce(event.delta);
 
-                    if event.modifiers.secondary()
-                        && editor.read(cx).enable_mouse_wheel_zoom
-                        && EditorSettings::get_global(cx).mouse_wheel_zoom
-                    {
-                        let delta_y = match event.delta {
-                            ScrollDelta::Pixels(pixels) => pixels.y.into(),
-                            ScrollDelta::Lines(lines) => lines.y,
-                        };
-
-                        if delta_y > 0.0 {
-                            theme_settings::adjust_ui_font_size(cx, |size| size + px(1.0));
-                            theme_settings::increase_buffer_font_size(cx);
-                        } else if delta_y < 0.0 {
-                            theme_settings::adjust_ui_font_size(cx, |size| size - px(1.0));
-                            theme_settings::decrease_buffer_font_size(cx);
+                    let scroll_sensitivity = {
+                        if event.modifiers.alt {
+                            fast_scroll_sensitivity
+                        } else {
+                            base_scroll_sensitivity
                         }
+                    };
 
-                        cx.stop_propagation();
-                    } else {
-                        let scroll_sensitivity = {
-                            if event.modifiers.alt {
-                                fast_scroll_sensitivity
-                            } else {
-                                base_scroll_sensitivity
-                            }
-                        };
-
-                        editor.update(cx, |editor, cx| {
+                    editor.update(cx, |editor, cx| {
                             let line_height = position_map.line_height;
                             let glyph_width = position_map.em_layout_width;
                             let (delta, axis) = match delta {
@@ -582,7 +563,6 @@ impl EditorElement {
                                 editor.scroll_manager.reset_top_overscroll_notification();
                             }
                         });
-                    }
                 }
             }
         });
