@@ -22,4 +22,8 @@ When a command should disappear from the user-facing command palette but remain 
 
 # Build Workflow
 
-Rust builds in this repository are expensive, especially after touching high-fanout crates like `zed_actions`, `workspace`, `ui`, `settings`, `editor`, or `gpui`. Batch related implementation changes before validating. Prefer one `cargo build -p zed` after a batch, because it both validates and produces the runnable `target/debug/zed.exe`. Use `cargo check` only for targeted intermediate feedback when a risky Rust change needs faster validation before continuing.
+Rust builds in this repository are expensive, especially after touching high-fanout crates like `zed_actions`, `workspace`, `ui`, `settings`, `editor`, or `gpui`. Batch related implementation changes before validating.
+
+Default build validation command: `cargo build -p zed`. Use this after all intended changes are made, not repeatedly after every small edit. This single command both validates compilation and produces the runnable `target/debug/zed.exe`, which is exactly what the user wants for normal change/build/test loops.
+
+Avoid separate `cargo check` + `cargo build` workflows by default, because that doubles expensive compiler work. Use `cargo check` only for targeted intermediate feedback when a risky Rust change needs faster validation before continuing, and still minimize how often any Rust build/check command is run.

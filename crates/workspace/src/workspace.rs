@@ -8634,25 +8634,6 @@ impl Render for Workspace {
         };
         let ui_font = theme_settings::setup_ui_font(window, cx);
 
-        window.on_mouse_event(|event: &ScrollWheelEvent, phase, _window, cx| {
-            if phase == DispatchPhase::Capture && event.modifiers.secondary() {
-                let delta_y = match event.delta {
-                    ScrollDelta::Pixels(pixels) => pixels.y.into(),
-                    ScrollDelta::Lines(lines) => lines.y,
-                };
-
-                if delta_y > 0.0 {
-                    theme_settings::adjust_ui_font_size(cx, |size| size + px(1.0));
-                    theme_settings::increase_buffer_font_size(cx);
-                    cx.stop_propagation();
-                } else if delta_y < 0.0 {
-                    theme_settings::adjust_ui_font_size(cx, |size| size - px(1.0));
-                    theme_settings::decrease_buffer_font_size(cx);
-                    cx.stop_propagation();
-                }
-            }
-        });
-
         let theme = cx.theme().clone();
         let colors = theme.colors();
         let notification_entities = self
@@ -8743,7 +8724,42 @@ impl Render for Workspace {
                                             }
                                         })
                                     },
-                                    |_, _, _, _| {},
+                                    |_, _, window, _| {
+                                        window.on_mouse_event(
+                                            |event: &ScrollWheelEvent, phase, _window, cx| {
+                                                if phase == DispatchPhase::Capture
+                                                    && event.modifiers.secondary()
+                                                {
+                                                    let delta_y = match event.delta {
+                                                        ScrollDelta::Pixels(pixels) => {
+                                                            pixels.y.into()
+                                                        }
+                                                        ScrollDelta::Lines(lines) => lines.y,
+                                                    };
+
+                                                    if delta_y > 0.0 {
+                                                        theme_settings::adjust_ui_font_size(
+                                                            cx,
+                                                            |size| size + px(1.0),
+                                                        );
+                                                        theme_settings::increase_buffer_font_size(
+                                                            cx,
+                                                        );
+                                                        cx.stop_propagation();
+                                                    } else if delta_y < 0.0 {
+                                                        theme_settings::adjust_ui_font_size(
+                                                            cx,
+                                                            |size| size - px(1.0),
+                                                        );
+                                                        theme_settings::decrease_buffer_font_size(
+                                                            cx,
+                                                        );
+                                                        cx.stop_propagation();
+                                                    }
+                                                }
+                                            },
+                                        );
+                                    },
                                 )
                                 .absolute()
                                 .size_full()
